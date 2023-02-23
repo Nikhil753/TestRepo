@@ -64,37 +64,37 @@ jobs:
     - name: Pack solution
       uses: microsoft/powerplatform-actions/pack-solution@v0
       with:
-        solution-folder: ${{ inputs.solution_source_folder}}/${{ inputs.solution_name }}
-        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
+        solution-folder: solutions/ALMLab
+        solution-file: out/solutions/ALMLab.zip
         solution-type: Unmanaged
 
     - name: Import solution as unmanaged to build env
       uses: microsoft/powerplatform-actions/import-solution@v0
       with:
-        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
-        app-id: ${{inputs.CLIENT_ID}}
-        client-secret: ${{ secrets.envSecret }}
-        tenant-id: ${{inputs.TENANT_ID}}
-        solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
+        environment-url: 'https://orged306eb3.crm8.dynamics.com/'
+        app-id: 'eea2237f-9cf4-43d5-8d31-7adec3760a63'
+        client-secret: 'qVd8Q~NeU~dAjORNcPOXwXd52ls2NGxHFEeONdA5'
+        tenant-id: '3d90fb9c-95a2-4ed8-be40-9806698b91b9'
+        solution-file: out/solutions/ALMLab.zip
         force-overwrite: true
         publish-changes: true
 
     - name: Export solution as managed
       uses: microsoft/powerplatform-actions/export-solution@v0
       with:
-        environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
-        app-id: ${{inputs.CLIENT_ID}}
-        client-secret: ${{ secrets.envSecret }} 
-        tenant-id: ${{inputs.TENANT_ID}}
-        solution-name: ${{ inputs.solution_name }}
+        environment-url: 'https://orged306eb3.crm8.dynamics.com/'
+        app-id: 'eea2237f-9cf4-43d5-8d31-7adec3760a63'
+        client-secret: 'qVd8Q~NeU~dAjORNcPOXwXd52ls2NGxHFEeONdA5'
+        tenant-id: '3d90fb9c-95a2-4ed8-be40-9806698b91b9'
+        solution-name: nkd
         managed: true
-        solution-output-file: ${{ inputs.solution_shipping_folder}}/${{ inputs.solution_name }}.zip
+        solution-output-file: out/ship/ALMLab.zip
 
     - name: Upload the ready to ship solution to GH artifact store
       uses: actions/upload-artifact@v2
       with:
         name: managedSolutions
-        path: ${{ inputs.solution_shipping_folder}}/
+        path: out/release/
 
   release-to-staging:
     needs: [ convert-to-managed ]
@@ -111,14 +111,14 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: managedSolutions
-        path: ${{ inputs.solution_release_folder}}
+        path: out/release/
     - name: Import solution to prod env
       uses: microsoft/powerplatform-actions/import-solution@v0
       with:
-        environment-url: ${{inputs.PRODUCTION_ENVIRONMENT_URL}}
-        app-id: ${{inputs.CLIENT_ID}}
-        client-secret: ${{ secrets.envSecret }}
-        tenant-id: ${{inputs.TENANT_ID}}
-        solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
+        environment-url: 'https://orged306eb3.crm8.dynamics.com/'
+        app-id: 'eea2237f-9cf4-43d5-8d31-7adec3760a63'
+        client-secret: 'qVd8Q~NeU~dAjORNcPOXwXd52ls2NGxHFEeONdA5'
+        tenant-id: '3d90fb9c-95a2-4ed8-be40-9806698b91b9'
+        solution-file: out/release/ALMLab.zip
         force-overwrite: true
         publish-changes: true
